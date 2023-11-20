@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,19 +30,13 @@ class MessageThreads : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_message_threads)
 
-        /* Random data */
-//        val id1 = arrayListOf<Int>(1,2,3,4,5,6,7,8,9,10)
-//        val threadid1 = arrayListOf<Int>(1,2,3,4,5,6,7,8,9,10)
-//        val userid1 = arrayListOf<String>("One", "Two", "Three", "Four", "Five",
-//            "Six", "Seven", "Eight", "Nine", "Ten")
-//        val agentid1 = arrayListOf<String>("One1", "Two1", "Three1", "Four1", "Five1",
-//            "Six1", "Seven1", "Eight1", "Nine1", "Ten1")
-//        val body1 = arrayListOf<String>("This is body", "This is body",
-//            "This is body",  "This is body", "This is body", "This is body", "This is body",
-//            "This is body", "This is body", "This is body")
+        val window: Window = window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = resources.getColor(R.color.darkthemebg)
 
+        /* Get data from previous screen */
+        val authToken = intent.getStringExtra("BRANCH_INTERNATIONAL_AUTH_TOKEN")
 
-        /******************************/
         // Retrofit setup
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL) // Replace with your actual base URL
@@ -59,8 +55,7 @@ class MessageThreads : AppCompatActivity() {
                     messageThreads.addAll(response.body() ?: emptyList())
                     recyclerView.adapter?.notifyDataSetChanged()
                 } else {
-                    // Handle error
-                    // For example, you can check response.code() to see the HTTP status code
+                    return
                 }
                 Log.d("THIS_IS_ERROR", response.toString())
             }
@@ -78,29 +73,19 @@ class MessageThreads : AppCompatActivity() {
 
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-//        for(index in id1.indices){
-//            messageThreads.add(ThreadModal(id1[index], threadid1[index], userid1[index], agentid1[index], body1[index], "10:00 AM"))
-//        }
-
-
         val threadAdapter = ThreadAdapter(messageThreads, this)
         recyclerView.adapter = threadAdapter
 
         threadAdapter.setOnItemClickListener(object : ThreadAdapter.onItemClickListener{
             override fun onItemClicking(position: Int) {
 
-                Toast
-                    .makeText(this@MessageThreads, messageThreads[position].user_id, Toast.LENGTH_SHORT)
-                    .show()
+                val intent = Intent(this@MessageThreads, IndividualMessage::class.java)
+                intent.putExtra("USER_ID", messageThreads[position].user_id.toString())
+                intent.putExtra("USER_MESSAGE", messageThreads[position].body)
+                intent.putExtra("BRANCH_INTERNATIONAL_AUTH_TOKEN", authToken)
+                startActivity(intent)
+
             }
-
         })
-
-
-
-
-        /*
-        * message body, timestamp, and agent OR user id
-        * */
     }
 }

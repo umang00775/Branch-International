@@ -48,7 +48,7 @@ RecyclerView.Adapter<ThreadAdapter.ThreadViewHolder>() {
     override fun onBindViewHolder(holder: ThreadAdapter.ThreadViewHolder, position: Int) {
         var currentItem = threadList[position]
 
-        holder.userID.text = currentItem.user_id
+        holder.userID.text = currentItem.user_id.toString()
         holder.timeStamp.text = currentItem.timestamp
         holder.messageBody.text = currentItem.body
     }

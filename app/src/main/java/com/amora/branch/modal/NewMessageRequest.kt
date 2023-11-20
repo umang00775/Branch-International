@@ -1,6 +1,8 @@
 package com.amora.branch.modal
 
+import com.google.gson.annotations.SerializedName
+
 data class NewMessageRequest(
-    val thread_id: Int,
-    val body: String
+    @SerializedName("thread_id") val threadId: String?,
+    @SerializedName("body") val body: String
 )

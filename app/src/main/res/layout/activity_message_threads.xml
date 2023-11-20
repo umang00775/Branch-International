@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".screens.MessageThreads"
-    android:padding="@dimen/main_pad">
+    android:padding="@dimen/main_pad"
+    android:background="@color/darkthemebg">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/threadsRecyclerView"
